@@ -21,7 +21,7 @@ jobs:
         uses: denoland/setup-deno@v2.0.3
 
       - name: install deps
-        run: deno install
+        run: deno install --allow-import
 
       - name: compile
         run: deno task compile
