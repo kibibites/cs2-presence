@@ -21,28 +21,44 @@ await client.connect();
 ["SIGINT", "SIGTERM", "SIGBREAK"].forEach((s) => {
   if (Deno.build.os === "windows" && s === "SIGTERM") return;
   if (Deno.build.os === "linux" && s === "SIGBREAK") return;
-  Deno.addSignalListener(s as Deno.Signal, client.close)
+  Deno.addSignalListener(s as Deno.Signal, client.close);
 });
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
-const fmtPlayingState = ({ map, player, round }: GameState) => {
-  if (!map || !player) return "Unknown";
+let cached_kills = 0;
+let cached_deaths = 0;
+let cached_assists = 0;
+let cached_team = "";
 
-  const player_is_t = player.team && player.team.toLowerCase() === "t";
+const fmtPlayingState = ({ map, player, round, provider }: GameState) => {
+  if (!map || !provider) return "Unknown";
+
+  if (player && player.steamid === provider.steamid) {
+    if (player.team) cached_team = player.team.toLowerCase();
+
+    const stats = (player as typeof player & {
+      match_stats?: { kills: number; assists: number; deaths: number };
+    }).match_stats;
+
+    if (stats) {
+      cached_kills = stats.kills;
+      cached_deaths = stats.deaths;
+      cached_assists = stats.assists;
+    }
+  }
+
+  const player_is_t = cached_team === "t";
   const t_score = map.team_t.score;
   const ct_score = map.team_ct.score;
-  const { kills, assists, deaths } = (player as typeof player & {
-    match_stats: { kills: number; assists: number; deaths: number };
-  })["match_stats"];
 
-  const phase = (map.phase != "live")
+  const phase = map.phase != "live"
     ? map.phase
     : (round ? (round.bomb ? round.bomb : round.phase) : "unknown");
 
   return `${capitalize(phase)} | [ ${player_is_t ? t_score : ct_score} : ${
     player_is_t ? ct_score : t_score
-  } ] | ${kills}K - ${deaths}D - ${assists}A`;
+  } ] | ${cached_kills}K - ${cached_deaths}D - ${cached_assists}A`;
 };
 
 const fmtPlayingDetails = ({ map }: GameState) => {
