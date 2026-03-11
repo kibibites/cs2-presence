@@ -35,9 +35,11 @@ jobs:
       - name: upload linux artifact
         uses: actions/upload-artifact@v7.0.0
         with:
+          name: linux
           path: cs2-presence.xz
           
       - name: upload windows artifact
         uses: actions/upload-artifact@v7.0.0
         with:
+          name: windows
           path: cs2-presence.exe.xz
