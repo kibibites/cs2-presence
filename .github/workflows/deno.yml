@@ -20,8 +20,8 @@ jobs:
       - name: setup deno
         uses: denoland/setup-deno@v2.0.3
 
-      - name: compile
-        run: deno install -A
+      - name: install deps
+        run: deno install
 
       - name: compile
         run: deno task compile
