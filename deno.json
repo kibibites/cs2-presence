@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "dev": "deno run --watch -A main.ts",
+    "minify": "deno bundle --allow-import --frozen --lock --minify main.ts -o cs2-presence.js",
+    "compile:windows": "deno task minify && deno compile -A --target=x86_64-pc-windows-msvc cs2-presence.js",
+    "compile:linux": "deno task minify && deno compile -A --target=x86_64-unknown-linux-gnu cs2-presence.js"
+  },
+  "imports": {
+    "csgo-gsi-types": "npm:csgo-gsi-types@^1.0.7",
+    "discord_rpc": "https://deno.land/x/discord_rpc@0.3.2/mod.ts"
+  }
+}
