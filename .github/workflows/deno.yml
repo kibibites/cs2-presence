@@ -19,6 +19,9 @@ jobs:
 
       - name: setup deno
         uses: denoland/setup-deno@v2.0.3
+      
+      - name: install pixz
+        run: sudo apt install pixz
 
       - name: install deps
         run: deno install --allow-import
