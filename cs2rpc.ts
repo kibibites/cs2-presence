@@ -9,7 +9,7 @@ export interface Options {
   disableFluffy: boolean;
 }
 
-export default class Cs2Rpc {
+export default class Cs2Rpc extends EventTarget {
   // stateless
   client: Client = new Client({
     id: "1481083110971019396",
@@ -31,6 +31,8 @@ export default class Cs2Rpc {
   #interval: number = 0;
 
   constructor(options?: Partial<Options>) {
+    super();
+
     this.options = {
       ...this.options,
       ...options,
@@ -105,7 +107,7 @@ export default class Cs2Rpc {
     // deno-fmt-ignore
     const isFluffy = !this.options.disableFluffy && (Math.random() <= 0.0026 || this.options.fluffy);
 
-    await this.client.setActivity({
+    const activity: Activity = {
       ...({
         "menu": { details: "In Menu" },
         "playing": {
@@ -118,12 +120,15 @@ export default class Cs2Rpc {
         "free": { details: "Free" },
         "textinput": { details: "Textinput" },
         "unknown": { details: "Unknown" },
-      }[state.player?.activity || "unknown"] satisfies Activity),
+      }[state.player?.activity || "unknown"]),
       assets: {
         large_image: isFluffy ? "fluffy" : "icon",
         large_text: "Counter-Strike 2",
       },
-    });
+    };
+
+    await this.client.setActivity(activity);
+    this.dispatchEvent(new CustomEvent('updateActivity', { detail: activity }));
   }
 
   async handle(state: GameState) {

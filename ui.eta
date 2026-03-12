@@ -34,6 +34,10 @@
       <button type="submit">submit</button>
     </form>
   </main>
+  
+  <script>
+    import { Hono } from "https://esm.sh/jsr/@hono/hono@4";
+  </script>
 </body>
 
 </html>
