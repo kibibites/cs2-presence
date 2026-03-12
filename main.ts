@@ -2,7 +2,6 @@ import { configure, getConsoleSink, getLogger } from "@logtape/logtape";
 import { getStreamFileSink } from "@logtape/file";
 import type { GameState } from "csgo-gsi-types";
 import Cs2Rpc from "./cs2rpc.ts";
-import { log } from "node:console";
 
 // logging
 const log_filename = Deno.makeTempFileSync({
@@ -18,19 +17,37 @@ await configure({
   loggers: [
     {
       category: "cs2-presence",
-      lowestLevel: "debug",
       sinks: ["console", "file"],
+      lowestLevel: "info",
+    },
+    {
+      category: ["cs2-presence", "requests"],
+      sinks: ["file"],
+      lowestLevel: "debug",
+    },
+    {
+      category: ["logtape", "meta"],
+      sinks: ["console"],
+      lowestLevel: "warning",
     },
   ],
 });
 
-const logger = getLogger("cs2-presence");
+const log_main = getLogger("cs2-presence");
+const log_req = log_main.getChild("requests")
+log_main.info`log file at: ${log_filename}`;
 
 // controller
 const rpc = new Cs2Rpc();
-await rpc.start();
 
-logger.info`log file at: ${log_filename}`;
+try {
+  await rpc.start();
+} catch (e) {
+  log_main.fatal(`failed to connect to discord; ${(e as Error).toString()}`);
+  Deno.exit(1);
+}
+
+log_main.info`connected to discord.`;
 
 ["SIGINT", "SIGTERM", "SIGBREAK"].forEach((s) => {
   // unsupported signals
@@ -43,11 +60,19 @@ logger.info`log file at: ${log_filename}`;
   });
 });
 
-Deno.serve(async (req) => {
-  const data = (await req.json()) as GameState;
-  logger.debug("received data: {data}", { data });
-
-  await rpc.handle(data);
+Deno.serve({
+  onListen: ({ hostname, port }) => {
+    // deno-fmt-ignore
+    log_main.info`listening on: ${(new URL(`http://${hostname}:${port}`).toString())}`;
+  },
+}, async (req) => {
+  try {
+    log_req.debug`${req}`
+    const data = (await req.json()) as GameState;
+    await rpc.handle(data);
+  } catch (e) {
+    log_main.error`error while handling request: ${(e as Error).toString()}`;
+  }
 
   return new Response("ok", { headers: { "content-type": "text/plain" } });
 });
