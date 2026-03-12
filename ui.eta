@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://matcha.mizu.sh/matcha.css">
+  <title>cs2-presence</title>
+</head>
+
+<body>
+  <main>
+    <figure>
+      <% if (it.options.fluffy===true) { %>
+        <img src="https://cdn.discordapp.com/app-assets/1481083110971019396/1481088949593047070.png">
+        <% } else { %>
+          <img src="https://cdn.discordapp.com/app-assets/1481083110971019396/1481083293792211095.png">
+          <% } %>
+            <figcaption><a href="https://github.com/kibibites/cs2-presence" rel="noopener noreferrer"
+                target="_blank">cs2-presence</a></figcaption>
+    </figure>
+    <h3>options</h3>
+    <form>
+      <label class="flex align-center">
+        timeout:
+        <input class="ml-1" name="unused" type="number" value="<%= it.options.timeout %>">
+      </label>
+      <fieldset class="flex space-around">
+        <legend>fluffy icon?</legend>
+        <label><input type="radio" name="fluffy" value="always" <% if (it.options.fluffy && !it.options.disableFluffy) { %> checked <% } %>>always</label>
+        <label><input type="radio" name="fluffy" value="sometimes" <% if (!it.options.disableFluffy && !it.options.fluffy) { %> checked <% } %>>sometimes</label>
+        <label><input type="radio" name="fluffy" value="never" <% if (it.options.disableFluffy) { %> checked <% } %>>never</label>
+      </fieldset>
+      <button type="submit">submit</button>
+    </form>
+  </main>
+</body>
+
+</html>

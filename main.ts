@@ -1,5 +1,7 @@
 import { configure, getConsoleSink, getLogger } from "@logtape/logtape";
 import { getStreamFileSink } from "@logtape/file";
+import { Eta } from "@bgub/eta";
+import ui from "./ui.eta" with { type: "text" };
 import type { GameState } from "csgo-gsi-types";
 import Cs2Rpc from "./cs2rpc.ts";
 
@@ -34,8 +36,11 @@ await configure({
 });
 
 const log_main = getLogger("cs2-presence");
-const log_req = log_main.getChild("requests")
+const log_req = log_main.getChild("requests");
 log_main.info`log file at: ${log_filename}`;
+
+// templating
+const eta = new Eta();
 
 // controller
 const rpc = new Cs2Rpc();
@@ -63,11 +68,16 @@ log_main.info`connected to discord.`;
 Deno.serve({
   onListen: ({ hostname, port }) => {
     // deno-fmt-ignore
-    log_main.info`listening on: ${(new URL(`http://${hostname}:${port}`).toString())}`;
+    log_main.info`listening at: ${(new URL(`http://${hostname}:${port}`).toString())}`;
+    log_main.info`visit the link above to change preferences.`
   },
 }, async (req) => {
+  if (req.method == "GET") return new Response(eta.renderString(ui, {
+    options: rpc.options
+  }), { headers: { 'content-type': 'text/html' } });
+
   try {
-    log_req.debug`${req}`
+    log_req.debug`${req}`;
     const data = (await req.json()) as GameState;
     await rpc.handle(data);
   } catch (e) {

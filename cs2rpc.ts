@@ -5,6 +5,7 @@ const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 export interface Options {
   timeout: number;
+  fluffy: boolean;
   disableFluffy: boolean;
 }
 
@@ -13,9 +14,9 @@ export default class Cs2Rpc {
   client: Client = new Client({
     id: "1481083110971019396",
   });
-  fluffy: boolean = false;
   options: Options = {
     timeout: 30000,
+    fluffy: false,
     disableFluffy: false,
   };
 
@@ -29,7 +30,7 @@ export default class Cs2Rpc {
   #cached_team = "";
   #interval: number = 0;
 
-  constructor(options?: Options) {
+  constructor(options?: Partial<Options>) {
     this.options = {
       ...this.options,
       ...options,
@@ -102,7 +103,7 @@ export default class Cs2Rpc {
 
   async #update(state: GameState) {
     // deno-fmt-ignore
-    const isFluffy = !this.options.disableFluffy && (Math.random() <= 0.0026 || this.fluffy);
+    const isFluffy = !this.options.disableFluffy && (Math.random() <= 0.0026 || this.options.fluffy);
 
     await this.client.setActivity({
       ...({
