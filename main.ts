@@ -2,6 +2,7 @@ import type { GameState } from "csgo-gsi-types";
 import Cs2Rpc from "./cs2rpc.ts";
 
 const rpc = new Cs2Rpc();
+await rpc.start();
 
 const log_filename = await Deno.makeTempFile({
   prefix: "cs2-presence-",

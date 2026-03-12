@@ -27,7 +27,7 @@ export default class Cs2Rpc {
   #cached_deaths = 0;
   #cached_assists = 0;
   #cached_team = "";
-  #interval: number;
+  #interval: number = 0;
 
   constructor(options?: Options) {
     this.options = {
@@ -61,7 +61,7 @@ export default class Cs2Rpc {
   }
 
   async start() {
-    this.#interval = setInterval(this.#checkTimeout, 5000);
+    this.#interval = setInterval(() => this.#checkTimeout(), 5000);
     this.client = await this.client.connect();
   }
 
@@ -73,19 +73,20 @@ export default class Cs2Rpc {
 
   #fmtPlayingState({ map, player, round, provider }: GameState) {
     if (!map || !provider) return "Unknown";
-    if (!player || player.steamid !== provider.steamid) return; // spectating someone else
 
-    if (player.team) this.#cached_team = player.team.toLowerCase();
+    // update cached stats
+    if (player && player.steamid === provider.steamid) {
+      if (player.team) this.#cached_team = player.team.toLowerCase();
+      const stats = (player as (typeof player & {
+        match_stats?: { kills: number; assists: number; deaths: number };
+      })).match_stats;
 
-    const stats = (player as (typeof player & {
-      match_stats?: { kills: number; assists: number; deaths: number };
-    })).match_stats;
-
-    if (!stats) return;
-
-    this.#cached_kills = stats.kills;
-    this.#cached_deaths = stats.deaths;
-    this.#cached_assists = stats.assists;
+      if (stats) {
+        this.#cached_kills = stats.kills;
+        this.#cached_deaths = stats.deaths;
+        this.#cached_assists = stats.assists;
+      }
+    }
 
     const player_is_t = this.#cached_team === "t";
 
