@@ -2,6 +2,9 @@
 
 discord rich presence for counter strike 2.
 
+## preview
+![preview image](./preview.png)
+
 ## download
 
 | platform    | link                                                                                                                                                                                          |
