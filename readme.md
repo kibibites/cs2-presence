@@ -26,4 +26,4 @@ discord rich presence for counter strike 2.
 
 4. extract and run the executable, and start your game
 
-5. profit
+5. visit [`http://localhost:8000`](http://localhost:8000) to change preferences.

@@ -69,7 +69,6 @@ Deno.serve({
   onListen: ({ hostname, port }) => {
     // deno-fmt-ignore
     log_main.info`listening at: ${(new URL(`http://${hostname}:${port}`).toString())}`;
-    log_main.info`visit the link above to change preferences.`
   },
 }, async (req) => {
   if (req.method == "GET") return new Response(eta.renderString(ui, {
