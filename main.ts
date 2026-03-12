@@ -1,120 +1,30 @@
-import { type Activity, Client } from "discord_rpc";
 import type { GameState } from "csgo-gsi-types";
+import Cs2Rpc from "./cs2rpc.ts";
 
-const client = new Client({
-  id: "1481083110971019396",
+const rpc = new Cs2Rpc();
+
+const log_filename = await Deno.makeTempFile({
+  prefix: "cs2-presence-",
+  suffix: ".log",
 });
 
-const fluffy = false;
-
-const log_filename = await Deno.makeTempFile();
-await Deno.writeTextFile(log_filename, "started\n");
-console.log("log at: " + log_filename);
-
-let last_updated = Date.now();
-setInterval(async () => {
-  if (Date.now() - last_updated > 30000) await client.clearActivity();
-}, 5000);
-
-await client.connect();
+console.log("log file at: " + log_filename);
 
 ["SIGINT", "SIGTERM", "SIGBREAK"].forEach((s) => {
+  // unsupported signals
   if (Deno.build.os === "windows" && s === "SIGTERM") return;
   if (Deno.build.os === "linux" && s === "SIGBREAK") return;
-  Deno.addSignalListener(s as Deno.Signal, client.close);
+
+  Deno.addSignalListener(s as Deno.Signal, async () => {
+    await rpc.stop();
+    Deno.exit(0);
+  });
 });
-
-const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
-
-let cached_kills = 0;
-let cached_deaths = 0;
-let cached_assists = 0;
-let cached_team = "";
-
-const fmtPlayingState = ({ map, player, round, provider }: GameState) => {
-  if (!map || !provider) return "Unknown";
-
-  if (player && player.steamid === provider.steamid) {
-    if (player.team) cached_team = player.team.toLowerCase();
-
-    const stats = (player as typeof player & {
-      match_stats?: { kills: number; assists: number; deaths: number };
-    }).match_stats;
-
-    if (stats) {
-      cached_kills = stats.kills;
-      cached_deaths = stats.deaths;
-      cached_assists = stats.assists;
-    }
-  }
-
-  const player_is_t = cached_team === "t";
-  const t_score = map.team_t.score;
-  const ct_score = map.team_ct.score;
-
-  const phase = map.phase != "live"
-    ? map.phase
-    : (round ? (round.bomb ? round.bomb : round.phase) : "unknown");
-
-  return `${capitalize(phase)} | [ ${player_is_t ? t_score : ct_score} : ${
-    player_is_t ? ct_score : t_score
-  } ] | ${cached_kills}K - ${cached_deaths}D - ${cached_assists}A`;
-};
-
-const fmtPlayingDetails = ({ map }: GameState) => {
-  if (!map) return "Unknown";
-
-  const mode = {
-    "scrimcomp2v2": "wingman",
-  }[map.mode] ?? capitalize(map.mode);
-
-  const mapName = {
-    "de_ancient_night": "Ancient (Night)",
-    "de_dust2": "Dust 2",
-    "ar_shoots_night": "Shoots (Night)",
-  }[map.name] ?? map.name.split("_").slice(1).map(capitalize).join(" ");
-
-  return `${mode} on ${mapName}`;
-};
-
-let time_start: number | undefined;
-let old_phase: string | undefined;
-
-const update: Record<string, (data: GameState) => Activity> = {
-  "menu": () => ({ details: "In Menu" }),
-  "playing": (data) => ({
-    details: fmtPlayingDetails(data),
-    state: fmtPlayingState(data),
-    timestamps: {
-      start: time_start,
-    },
-  }),
-};
 
 Deno.serve(async (req) => {
   const data = (await req.json()) as GameState;
-  last_updated = Date.now();
-  await Deno.writeTextFile(log_filename, JSON.stringify(data) + `\n`, {
-    append: true,
-  });
 
-  if (data.player?.activity) {
-    let upd = update[data.player.activity];
-    upd ||= () => ({ details: "Unknown" });
-
-    if (data.round?.phase !== old_phase) {
-      time_start = Date.now();
-      old_phase = data.round?.phase;
-    }
-
-    await client.setActivity({
-      ...(upd(data)),
-      assets: {
-        large_image: Math.random() <= 0.0026 || fluffy ? "fluffy" : "icon",
-        large_text: "Counter-Strike 2",
-      },
-    });
-  }
+  await rpc.handle(data);
 
   return new Response("ok", { headers: { "content-type": "text/plain" } });
 });
