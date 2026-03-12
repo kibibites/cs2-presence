@@ -1,15 +1,36 @@
+import { configure, getConsoleSink, getLogger } from "@logtape/logtape";
+import { getStreamFileSink } from "@logtape/file";
 import type { GameState } from "csgo-gsi-types";
 import Cs2Rpc from "./cs2rpc.ts";
+import { log } from "node:console";
 
-const rpc = new Cs2Rpc();
-await rpc.start();
-
-const log_filename = await Deno.makeTempFile({
+// logging
+const log_filename = Deno.makeTempFileSync({
   prefix: "cs2-presence-",
   suffix: ".log",
 });
 
-console.log("log file at: " + log_filename);
+await configure({
+  sinks: {
+    console: getConsoleSink(),
+    file: getStreamFileSink(log_filename),
+  },
+  loggers: [
+    {
+      category: "cs2-presence",
+      lowestLevel: "debug",
+      sinks: ["console", "file"],
+    },
+  ],
+});
+
+const logger = getLogger("cs2-presence");
+
+// controller
+const rpc = new Cs2Rpc();
+await rpc.start();
+
+logger.info`log file at: ${log_filename}`;
 
 ["SIGINT", "SIGTERM", "SIGBREAK"].forEach((s) => {
   // unsupported signals
@@ -24,6 +45,7 @@ console.log("log file at: " + log_filename);
 
 Deno.serve(async (req) => {
   const data = (await req.json()) as GameState;
+  logger.debug("received data: {data}", { data });
 
   await rpc.handle(data);
 

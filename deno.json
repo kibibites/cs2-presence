@@ -1,25 +1,25 @@
 {
   "tasks": {
-    "dev": "deno run --watch -A main.ts",
+    "dev": "deno run --unstable-fs --watch -A main.ts",
     "minify": "deno bundle --allow-import --frozen --lock --minify main.ts -o cs2-presence.js",
     "compile:windows": {
-      "command": "deno compile -A --target=x86_64-pc-windows-msvc cs2-presence.js",
+      "command": "deno compile --unstable-fs -A --target=x86_64-pc-windows-msvc cs2-presence.js",
       "dependencies": ["minify"]
     },
     "compile:linux": {
-      "command": "deno compile -A --target=x86_64-unknown-linux-gnu cs2-presence.js",
+      "command": "deno compile --unstable-fs -A --target=x86_64-unknown-linux-gnu cs2-presence.js",
       "dependencies": ["minify"]
     },
     "compile": { "dependencies": ["compile:windows", "compile:linux"] },
     "compress:windows": "pixz -i cs2-presence.exe -o cs2-presence.exe.xz -9",
     "compress:linux": "pixz -i cs2-presence -o cs2-presence.xz -9",
-    "compress": { "dependencies": ["compress:windows", "compress:linux"] }
+    "compress": { "dependencies": ["compress:windows", "compress:linux"] },
+    "clean": "rm cs2-presence*"
   },
   "imports": {
     "@bgub/eta": "jsr:@bgub/eta@^4.5.1",
     "@logtape/file": "jsr:@logtape/file@^2.0.4",
     "@logtape/logtape": "jsr:@logtape/logtape@^2.0.4",
-    "@std/cbor": "jsr:@std/cbor@^0.1.9",
     "csgo-gsi-types": "npm:csgo-gsi-types@^1.0.7",
     "discord_rpc": "https://deno.land/x/discord_rpc@0.3.2/mod.ts"
   }
