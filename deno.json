@@ -3,7 +3,7 @@
     "dev": "DEV=1 deno run --unstable-tsgo --unstable-fs --unstable-raw-imports --watch -A ./src/main.ts",
     "build": "deno bundle --unstable-tsgo --allow-import --unstable-raw-imports --frozen --lock --minify ./src/main.ts -o ./dist/cs2-presence.js",
     "compile:windows": {
-      "command": "deno compile --unstable-fs -A --target=x86_64-pc-windows-msvc -o ./dist/ ./dist/cs2-presence.js",
+      "command": "deno compile --unstable-fs -A --target=x86_64-pc-windows-msvc --icon icon.ico -o ./dist/ ./dist/cs2-presence.js",
       "dependencies": ["build"]
     },
     "compile:linux": {
