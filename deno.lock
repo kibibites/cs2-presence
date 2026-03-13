@@ -1,7 +1,6 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@bgub/eta@^4.5.1": "4.5.1",
     "jsr:@logtape/file@^2.0.4": "2.0.4",
     "jsr:@logtape/logtape@^2.0.4": "2.0.4",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
@@ -12,9 +11,6 @@
     "npm:csgo-gsi-types@^1.0.7": "1.0.7"
   },
   "jsr": {
-    "@bgub/eta@4.5.1": {
-      "integrity": "ad1d45002bbe6e8567ae04728eb1df76f25527c046143cf252f22f43cfa828d5"
-    },
     "@logtape/file@2.0.4": {
       "integrity": "d75c290a8907fde16e13cb69f6159a14c8fc811c5117bedadcee7af0529c61de",
       "dependencies": [
@@ -74,7 +70,6 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@bgub/eta@^4.5.1",
       "jsr:@logtape/file@^2.0.4",
       "jsr:@logtape/logtape@^2.0.4",
       "jsr:@std/cbor@~0.1.9",

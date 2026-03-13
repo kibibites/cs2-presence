@@ -1,20 +1,12 @@
 import { getLogger } from "@logtape/logtape";
-import { Eta } from "@bgub/eta";
-import ui from "./ui.eta" with { type: "text" };
 import type { GameState } from "csgo-gsi-types";
 import Cs2Rpc from "./cs2rpc.ts";
 import { type Activity } from "discord_rpc";
 import Clients from "./clients.ts";
 import "./logging.ts";
 
-// env vars
-const DEV = Deno.env.get("DEV");
-
 // logging
 const log_main = getLogger("cs2-presence");
-
-// templating
-const eta = new Eta();
 
 // controller
 const rpc = new Cs2Rpc();
@@ -62,13 +54,12 @@ Deno.serve({
   }
 
   if (req.method === "GET") {
-    const ui_string = DEV ? await Deno.readTextFile("./ui.eta") : ui;
-    return new Response(
-      eta.renderString(ui_string, {
-        options: rpc.options,
-      }),
-      { headers: { "content-type": "text/html" } },
-    );
+    return new Response(null, {
+      status: 302,
+      headers: {
+        location: "https://cs2presence.furry.coffee",
+      },
+    });
   }
 
   try {

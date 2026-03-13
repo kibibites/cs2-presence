@@ -1,27 +1,32 @@
 {
   "tasks": {
-    "dev": "DEV=1 deno run --unstable-tsgo --unstable-fs --unstable-raw-imports --watch --watch-exclude=./src/ui.eta -A ./src/main.ts",
-    "minify": "deno bundle --unstable-tsgo --allow-import --unstable-raw-imports --frozen --lock --minify ./src/main.ts -o ./dist/cs2-presence.js",
+    "dev": "DEV=1 deno run --unstable-tsgo --unstable-fs --unstable-raw-imports --watch -A ./src/main.ts",
+    "build": "deno bundle --unstable-tsgo --allow-import --unstable-raw-imports --frozen --lock --minify ./src/main.ts -o ./dist/cs2-presence.js",
     "compile:windows": {
       "command": "deno compile --unstable-fs -A --target=x86_64-pc-windows-msvc -o ./dist/ ./dist/cs2-presence.js",
-      "dependencies": ["minify"]
+      "dependencies": ["build"]
     },
     "compile:linux": {
       "command": "deno compile --unstable-fs -A --target=x86_64-unknown-linux-gnu -o ./dist/ ./dist/cs2-presence.js",
-      "dependencies": ["minify"]
+      "dependencies": ["build"]
     },
     "compile": { "dependencies": ["compile:windows", "compile:linux"] },
-    "compress:windows": "pixz -i cs2-presence.exe -o cs2-presence.exe.xz -9",
-    "compress:linux": "pixz -i cs2-presence -o cs2-presence.xz -9",
+    "compress:windows": "pixz -i ./dist/cs2-presence.exe -o ./dist/cs2-presence.exe.xz -9",
+    "compress:linux": "pixz -i ./dist/cs2-presence -o ./dist/cs2-presence.xz -9",
     "compress": { "dependencies": ["compress:windows", "compress:linux"] },
     "clean": "rm -rf dist"
   },
   "imports": {
-    "@bgub/eta": "jsr:@bgub/eta@^4.5.1",
     "@logtape/file": "jsr:@logtape/file@^2.0.4",
     "@logtape/logtape": "jsr:@logtape/logtape@^2.0.4",
     "@std/cbor": "jsr:@std/cbor@^0.1.9",
     "csgo-gsi-types": "npm:csgo-gsi-types@^1.0.7",
     "discord_rpc": "https://deno.land/x/discord_rpc@0.3.2/mod.ts"
-  }
+  },
+  "nodeModulesDir": "auto",
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "preact"
+  },
+  "allowScripts": ["npm:@parcel/watcher@2.5.6"]
 }
