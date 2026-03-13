@@ -25,7 +25,7 @@ try {
 }
 
 try {
-  // await rpc.start();
+  await rpc.start();
   rpc.addEventListener("updateActivity", (e) => {
     clients.update(e as CustomEvent<Activity>);
   });
@@ -80,6 +80,7 @@ Deno.serve({
     await rpc.handle(data);
   } catch (e) {
     log_main.error`error while handling request: ${(e as Error).toString()}`;
+    console.error(e);
   }
 
   return new Response("ok", { headers: { "content-type": "text/plain" } });
