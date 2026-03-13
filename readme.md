@@ -14,16 +14,8 @@ discord rich presence for counter strike 2.
 
 ## usage
 
-1. download the
-   [config file](https://raw.githubusercontent.com/kibibites/cs2-presence/refs/heads/mistress/gamestate_integration_cs2presence.cfg)
+1. download either the executable from the section above.
 
-2. move the config file to one of these folders:
-   - windows:
-     `C:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\game\csgo\cfg`
-   - linux: idk you should probably know this though
+2. extract and run the executable, and start your game.
 
-3. download either the executable from the section above.
-
-4. extract and run the executable, and start your game
-
-5. visit [`http://localhost:8000`](http://localhost:8000) to change preferences.
+3. visit [`http://localhost:8000`](http://localhost:8000) to change preferences.
