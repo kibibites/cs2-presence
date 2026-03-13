@@ -27,4 +27,4 @@ await configure({
   ],
 });
 
-getLogger("cs2-presence").info`log file at: ${log_filename}`;
+getLogger("cs2-presence").info`log file at: ${new URL(`file://${log_filename}`).toString()}`;
