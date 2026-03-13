@@ -1,61 +1,30 @@
-import { configure, getConsoleSink, getLogger } from "@logtape/logtape";
-import { getStreamFileSink } from "@logtape/file";
+import { getLogger } from "@logtape/logtape";
 import { Eta } from "@bgub/eta";
 import ui from "./ui.eta" with { type: "text" };
 import type { GameState } from "csgo-gsi-types";
 import Cs2Rpc from "./cs2rpc.ts";
-import { encodeCbor } from '@std/cbor';
 import { type Activity } from "discord_rpc";
+import Clients from "./clients.ts";
+import "./logging.ts";
+
+// env vars
+const DEV = Deno.env.get("DEV");
 
 // logging
-const log_filename = Deno.makeTempFileSync({
-  prefix: "cs2-presence-",
-  suffix: ".log",
-});
-
-await configure({
-  sinks: {
-    console: getConsoleSink(),
-    file: getStreamFileSink(log_filename),
-  },
-  loggers: [
-    {
-      category: "cs2-presence",
-      sinks: ["console", "file"],
-      lowestLevel: "info",
-    },
-    {
-      category: ["cs2-presence", "requests"],
-      sinks: ["file"],
-      lowestLevel: "debug",
-    },
-    {
-      category: ["logtape", "meta"],
-      sinks: ["console"],
-      lowestLevel: "warning",
-    },
-  ],
-});
-
 const log_main = getLogger("cs2-presence");
-const log_req = log_main.getChild("requests");
-log_main.info`log file at: ${log_filename}`;
 
 // templating
 const eta = new Eta();
 
 // controller
 const rpc = new Cs2Rpc();
-
-// ws connections
-const sockets: [WebSocket, number][] = [];
+const clients = new Clients(log_main);
 
 try {
-  await rpc.start();
-  rpc.addEventListener('updateActivity', (e) => {
-    // deno-lint-ignore no-explicit-any
-    sockets.forEach(([s]) => s.send(encodeCbor((e as CustomEvent<Activity>).detail as any)));
-  })
+  // await rpc.start();
+  rpc.addEventListener("updateActivity", (e) => {
+    clients.update(e as CustomEvent<Activity>);
+  });
 } catch (e) {
   log_main.fatal(`failed to connect to discord; ${(e as Error).toString()}`);
   Deno.exit(1);
@@ -69,13 +38,8 @@ log_main.info`connected to discord.`;
   if (Deno.build.os === "linux" && s === "SIGBREAK") return;
 
   Deno.addSignalListener(s as Deno.Signal, async () => {
-    log_main.info`shutting down rpc...`;
     await rpc.stop();
-    log_main.info`closing sockets...`;
-    sockets.forEach(([s, i]) => {
-      s.close();
-      clearInterval(i);
-    });
+    clients.closeAll();
     Deno.exit(0);
   });
 });
@@ -92,20 +56,15 @@ Deno.serve({
     }
 
     const { socket, response } = Deno.upgradeWebSocket(req);
-    socket.addEventListener("open", () =>
-      sockets.push([
-        socket,
-        setInterval(() => {
-          socket.send(new Uint8Array([0xe2, 0x99, 0xa1]));
-        }, 3000),
-      ]));
+    socket.addEventListener("open", () => clients.add(socket));
 
     return response;
   }
 
   if (req.method === "GET") {
+    const ui_string = DEV ? await Deno.readTextFile("./ui.eta") : ui;
     return new Response(
-      eta.renderString(ui, {
+      eta.renderString(ui_string, {
         options: rpc.options,
       }),
       { headers: { "content-type": "text/html" } },
@@ -113,8 +72,8 @@ Deno.serve({
   }
 
   try {
-    log_req.debug`${req}`;
     const data = (await req.json()) as GameState;
+    log_main.debug`${data}`;
     await rpc.handle(data);
   } catch (e) {
     log_main.error`error while handling request: ${(e as Error).toString()}`;

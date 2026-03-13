@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run --unstable-tsgo --unstable-fs --unstable-raw-imports --watch -A main.ts",
+    "dev": "DEV=1 deno run --unstable-tsgo --unstable-fs --unstable-raw-imports --watch --watch-exclude=ui.eta -A main.ts",
     "minify": "deno bundle --unstable-tsgo --allow-import --unstable-raw-imports --frozen --lock --minify main.ts -o cs2-presence.js",
     "compile:windows": {
       "command": "deno compile --unstable-fs -A --target=x86_64-pc-windows-msvc cs2-presence.js",
