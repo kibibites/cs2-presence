@@ -19,6 +19,8 @@ discord rich presence for counter strike 2.
 
 2. extract and run the executable, and start your game.
 
+    - **note**: you must start the program _before_ you launch the game for the first time; then, the order of you starting does not matter anymore.
+
 3. visit [`http://localhost:8000`](http://localhost:8000) to change preferences.
 
 ## api
