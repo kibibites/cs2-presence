@@ -50,7 +50,7 @@ export default class Cs2Rpc extends EventTarget {
 
     // custom mode renames
     const mode = {
-      "scrimcomp2v2": "wingman",
+      "scrimcomp2v2": "Wingman",
     }[map.mode] ?? capitalize(map.mode);
 
     // custom map renames
