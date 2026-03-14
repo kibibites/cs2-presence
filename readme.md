@@ -23,12 +23,20 @@ discord rich presence for counter strike 2.
 
 ## api
 
-there is a websocket endpoint at `0.0.0.0:8000/ws`. clients must send
-`[0xe2, 0x99, 0xa1]` (ping) continuously to avoid getting timed out by the
-server (checked every 5 seconds). the server then reply
-`[0xe2, 0x99, 0xa5]`(pong).
+this server only handles POST requests from cs2, it does not have any other http apis. all client-server communications are over websockets at `ws://localhost:8000/ws`.
 
-whenever there is a status update, the server sends a cbor object with this type:
+### heartbeat
+
+```typescript
+const ping = new Uint8Array([0xe2, 0x99, 0xa1]);
+const pong = new Uint8Array([0xe2, 0x99, 0xa5]);
+```
+
+after client connects to the server, it must send _pings_ at least every 3-4 seconds to avoid time out.
+
+the server will reply with _pong_.
+
+### sync
 
 ```typescript
 export interface Activity {
@@ -42,4 +50,22 @@ export interface Activity {
     start: number;
   };
 }
+
+const sync = new Uint8Array([0xe2, 0x87, 0x8b, ...encodeCbor(obj satisfies Activity)])
 ```
+
+the server will send clients _sync_ messages, formatted like above, whenever there is an activity update.
+
+### saving options
+
+```typescript
+interface Options {
+  timeout: number;
+  fluffy: boolean;
+  disableFluffy: boolean;
+}
+
+const options = new Uint8Array([0xe2, 0x9a, 0x99, ...encodeCbor(obj satisfies Options)])
+```
+
+the clients can send the server _options_ messages to update the options.
