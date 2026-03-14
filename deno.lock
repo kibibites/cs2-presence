@@ -3,10 +3,13 @@
   "specifiers": {
     "jsr:@logtape/file@^2.0.4": "2.0.4",
     "jsr:@logtape/logtape@^2.0.4": "2.0.4",
+    "jsr:@sigma/deno-compile-extra@0.13": "0.13.0",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/cbor@~0.1.9": "0.1.9",
+    "jsr:@std/fs@^1.0.21": "1.0.23",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@^1.1.0": "1.1.4",
+    "jsr:@std/path@^1.1.4": "1.1.4",
     "jsr:@std/semver@^1.0.8": "1.0.8",
     "jsr:@std/streams@^1.0.14": "1.0.17",
     "npm:csgo-gsi-types@^1.0.7": "1.0.7"
@@ -16,11 +19,18 @@
       "integrity": "d75c290a8907fde16e13cb69f6159a14c8fc811c5117bedadcee7af0529c61de",
       "dependencies": [
         "jsr:@logtape/logtape",
-        "jsr:@std/path"
+        "jsr:@std/path@^1.1.0"
       ]
     },
     "@logtape/logtape@2.0.4": {
       "integrity": "d4b6e85d82954f3d58014d85e4c0f93d6a836181ef4fbb4a852da7ed47979acb"
+    },
+    "@sigma/deno-compile-extra@0.13.0": {
+      "integrity": "520ea79beb10aee035da4f80355cedb87a3d2f3d8b4dfbdf459a1fc8cc20cfc2",
+      "dependencies": [
+        "jsr:@std/fs",
+        "jsr:@std/path@^1.1.4"
+      ]
     },
     "@std/bytes@1.0.6": {
       "integrity": "f6ac6adbd8ccd99314045f5703e23af0a68d7f7e58364b47d2c7f408aeb5820a"
@@ -30,6 +40,13 @@
       "dependencies": [
         "jsr:@std/bytes",
         "jsr:@std/streams"
+      ]
+    },
+    "@std/fs@1.0.23": {
+      "integrity": "3ecbae4ce4fee03b180fa710caff36bb5adb66631c46a6460aaad49515565a37",
+      "dependencies": [
+        "jsr:@std/internal",
+        "jsr:@std/path@^1.1.4"
       ]
     },
     "@std/internal@1.0.12": {
@@ -76,6 +93,7 @@
     "dependencies": [
       "jsr:@logtape/file@^2.0.4",
       "jsr:@logtape/logtape@^2.0.4",
+      "jsr:@sigma/deno-compile-extra@0.13",
       "jsr:@std/cbor@~0.1.9",
       "jsr:@std/semver@^1.0.8",
       "npm:csgo-gsi-types@^1.0.7"

@@ -19,6 +19,7 @@
   "imports": {
     "@logtape/file": "jsr:@logtape/file@^2.0.4",
     "@logtape/logtape": "jsr:@logtape/logtape@^2.0.4",
+    "@sigma/deno-compile-extra": "jsr:@sigma/deno-compile-extra@^0.13.0",
     "@std/cbor": "jsr:@std/cbor@^0.1.9",
     "@std/semver": "jsr:@std/semver@^1.0.8",
     "csgo-gsi-types": "npm:csgo-gsi-types@^1.0.7",

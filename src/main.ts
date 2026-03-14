@@ -8,6 +8,7 @@ import vdf_config from "../gamestate_integration_cs2presence.cfg" with {
 import Sockets from "./sockets.ts";
 import { updateCheck } from "./updatecheck.ts";
 import "./logging.ts";
+import "@sigma/deno-compile-extra/localStoragePolyfill";
 
 // logging
 const log_main = getLogger("cs2-presence");
