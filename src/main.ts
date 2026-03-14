@@ -70,9 +70,9 @@ try {
 });
 
 Deno.serve({
-  onListen: ({ hostname, port }) => {
+  onListen: ({ port }) => {
     // deno-fmt-ignore
-    log_main.info`listening at: ${(new URL(`http://${hostname}:${port}`).toString())}`;
+    log_main.info`listening at: ${(new URL(`http://localhost:${port}`).toString())}`;
   },
 }, async (req) => {
   if ((new URL(req.url)).pathname === "/ws") {
