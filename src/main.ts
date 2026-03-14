@@ -6,10 +6,14 @@ import vdf_config from "../gamestate_integration_cs2presence.cfg" with {
   type: "text",
 };
 import Sockets from "./sockets.ts";
+import { updateCheck } from "./updatecheck.ts";
 import "./logging.ts";
 
 // logging
 const log_main = getLogger("cs2-presence");
+
+// check update
+await updateCheck(log_main);
 
 // controller
 let rpc = new Cs2Rpc();

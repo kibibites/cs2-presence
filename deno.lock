@@ -7,6 +7,7 @@
     "jsr:@std/cbor@~0.1.9": "0.1.9",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@^1.1.0": "1.1.4",
+    "jsr:@std/semver@^1.0.8": "1.0.8",
     "jsr:@std/streams@^1.0.14": "1.0.17",
     "npm:csgo-gsi-types@^1.0.7": "1.0.7"
   },
@@ -39,6 +40,9 @@
       "dependencies": [
         "jsr:@std/internal"
       ]
+    },
+    "@std/semver@1.0.8": {
+      "integrity": "dc830e8b8b6a380c895d53fbfd1258dc253704ca57bbe1629ac65fd7830179b7"
     },
     "@std/streams@1.0.17": {
       "integrity": "7859f3d9deed83cf4b41f19223d4a67661b3d3819e9fc117698f493bf5992140"
@@ -73,6 +77,7 @@
       "jsr:@logtape/file@^2.0.4",
       "jsr:@logtape/logtape@^2.0.4",
       "jsr:@std/cbor@~0.1.9",
+      "jsr:@std/semver@^1.0.8",
       "npm:csgo-gsi-types@^1.0.7"
     ]
   }
