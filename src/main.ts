@@ -43,13 +43,11 @@ sockets.addEventListener("saveConfig", async (ev) => {
 await startRpc(rpc, sockets);
 
 // make sure requests are good
-const secret =
-  (new Uint8Array(
-    await crypto.subtle.digest(
-      "SHA-256",
-      crypto.getRandomValues(new Uint8Array(16)),
-    ),
-  )).toBase64();
+const secret = localStorage.getItem("secret") || await (async () => {
+  const r = (new Uint8Array(await crypto.subtle.digest("SHA-256",crypto.getRandomValues(new Uint8Array(16))))).toBase64();
+  localStorage.setItem("secret", r);
+  return r;
+})()
 
 // cs2 config
 try {
