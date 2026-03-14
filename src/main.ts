@@ -44,9 +44,9 @@ sockets.addEventListener("saveConfig", async (ev) => {
 await startRpc(rpc, sockets);
 
 // make sure requests are good
-const secret = localStorage.getItem("secret") || await (async () => {
+const secret = localStorage.getItem("cs2presence:secret") || await (async () => {
   const r = (new Uint8Array(await crypto.subtle.digest("SHA-256",crypto.getRandomValues(new Uint8Array(16))))).toBase64();
-  localStorage.setItem("secret", r);
+  localStorage.setItem("cs2presence:secret", r);
   return r;
 })()
 
