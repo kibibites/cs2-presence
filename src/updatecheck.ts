@@ -1,7 +1,7 @@
 import { greaterThan, parse } from "@std/semver";
 import { type Logger } from "@logtape/logtape";
 
-const VERSION = "1.1.5" as const;
+const VERSION = "1.1.6" as const;
 
 const updateCheck = async (log: Logger) => {
   const res = await fetch("https://api.github.com/repos/kibibites/cs2-presence/releases/latest");
