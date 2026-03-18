@@ -10,8 +10,8 @@ discord rich presence for counter strike 2.
 
 | platform    | link                                                                                                                                                                                          |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **windows** | [latest](https://github.com/kibibites/cs2-presence/releases/download/1.1.3/cs2-presence.exe.xz) \| [nightly](https://nightly.link/kibibites/cs2-presence/workflows/deno/mistress/windows.zip) |
-| **linux**   | [latest](https://github.com/kibibites/cs2-presence/releases/download/1.1.3/cs2-presence.xz) \| [nightly](https://nightly.link/kibibites/cs2-presence/workflows/deno/mistress/linux.zip)       |
+| **windows** | [latest](https://github.com/kibibites/cs2-presence/releases/download/1.1.7/cs2-presence.exe.xz) \| [nightly](https://nightly.link/kibibites/cs2-presence/workflows/deno/mistress/windows.zip) |
+| **linux**   | [latest](https://github.com/kibibites/cs2-presence/releases/download/1.1.7/cs2-presence.xz) \| [nightly](https://nightly.link/kibibites/cs2-presence/workflows/deno/mistress/linux.zip)       |
 
 ## usage
 
