@@ -1,4 +1,7 @@
 # cs2 presence
+![made with deno](https://img.shields.io/badge/Made%20with%20Deno-464647?logo=deno&logoColor=white)
+[![ci](https://github.com/kibibites/cs2-presence/actions/workflows/deno.yml/badge.svg)](https://github.com/kibibites/cs2-presence/actions/workflows/deno.yml)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/kibibites/cs2-presence/total)
 
 discord rich presence for counter strike 2.
 
